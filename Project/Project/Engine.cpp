@@ -268,5 +268,7 @@ string Engine::status()
 	tmp += to_string(mouse_tile.x);
 	tmp += 'x';
 	tmp += to_string(mouse_tile.y);
+	tmp += "\t BULLETS: ";
+	tmp += to_string(bullets.size());
 	return tmp;
 }
