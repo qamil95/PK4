@@ -11,7 +11,7 @@ Engine::~Engine()
 void Engine::run()
 {
 	initialize(); 
-	player = new Player("player", 10, 5, (float)window.getSize().x / 2, (float)window.getSize().y / 2); //gracz
+	player = new Player("player", 100, 5, (float)window.getSize().x / 2, (float)window.getSize().y / 2); //gracz
 	createEnemies(4);
 
 	//TEMP GENERACJA MAPY
@@ -109,29 +109,35 @@ void Engine::run()
 		//przeliczenie pozycji pociskow
 		for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
 		{
-			bool destroy = false;
 			(*act)->move();
 			sf::FloatRect tmp = (*act)->getGlobalBounds();
 			if (tmp.intersects(player->getGlobalBounds()))
-				destroy = true;
+			{
+				(*act)->destroy = true;
+				player->hit((*act)->dmg);
+			}
+				
 			for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 				if (tmp.intersects((*it)->getGlobalBounds()))
-					destroy = true;
+				{
+					(*act)->destroy = true;
+					(*it)->hit((*act)->dmg);
+				}
+					
 			for (int i = 0; i < 40; i++)
 				for (int j = 0; j < 20; j++)
 					if ((tiles[i][j]->tType != GRASS) &&
 						(tmp.intersects(tiles[i][j]->getGlobalBounds())))
-						destroy = true;
-			if (destroy)
-			{
-				delete (*act);
-				act = bullets.erase(act);
-			}
-				
+						(*act)->destroy = true;
+			if ((*act)->destroy)
+				(*act)->setFillColor(sf::Color::Red); //to na info o zadanym dmg
 		}
-		
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) //nowy strzal, to do poprawki
-			bullets.push_back(new Bullet(player->getPosition(), player->direction));
+
+
+		//TYMCZASOWE STRZA£Y
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
+
 
 		info.setString(status());
 		cout << (std::string)info.getString() << endl;
@@ -221,10 +227,10 @@ void Engine::createEnemies(int number)
 		switch (type)
 		{
 		case 0:
-			enemies.push_back(new Enemy("opponent", 10, 2, x, y));
+			enemies.push_back(new Enemy("opponent", 100, 2, x, y));
 			break;
 		case 1:
-			enemies.push_back(new Enemy("opponent2", 10, 2, x, y));
+			enemies.push_back(new Enemy("opponent2", 100, 2, x, y));
 			break;
 		}		
 	}
@@ -243,6 +249,21 @@ void Engine::refresh()
 		window.draw(**it);
 	window.draw(info);
 	window.display();
+
+	for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
+		if ((*act)->destroy)
+		{
+			delete (*act);
+			bullets.erase(act);
+			act--;
+		}
+	for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
+		if ((*act)->dead)
+		{
+			delete (*act);
+			enemies.erase(act);
+			act--;
+		}
 }
 
 
@@ -254,9 +275,9 @@ string Engine::status()
 	tmp += to_string(frame_counter / 60);
 	tmp += '\t';
 	tmp += to_string(time.asSeconds());
-	tmp += "\t FRAME: ";
+	tmp += "\tFRAME: ";
 	tmp += to_string(frame_counter);
-	tmp += "\t PLAYER: (";
+	tmp += "\tPLAYER: (";
 	tmp += to_string((int)player->getPosition().x);
 	tmp += 'x';
 	tmp += to_string((int)player->getPosition().y);
@@ -264,9 +285,13 @@ string Engine::status()
 	tmp += to_string(player->getPositionTile().x);
 	tmp += 'x';
 	tmp += to_string(player->getPositionTile().y);
-	tmp += "\t MOUSE: ";
+	tmp += "\tMOUSE: ";
 	tmp += to_string(mouse_tile.x);
 	tmp += 'x';
 	tmp += to_string(mouse_tile.y);
+	tmp += "\tHP: ";
+	tmp += to_string(player->getHP());
+	tmp += "\tBULLETS: ";
+	tmp += to_string(bullets.size());
 	return tmp;
 }

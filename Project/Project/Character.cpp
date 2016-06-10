@@ -32,8 +32,20 @@ float Character::getMovementSpeed()
 	return movement_speed;
 }
 
+int Character::getHP()
+{
+	return hp;
+}
+
 
 Character::~Character()
 {
 	delete texture;
+}
+
+void Character::hit(int dmg)
+{
+	hp -= dmg;
+	if (hp <= 0)
+		dead = true;
 }

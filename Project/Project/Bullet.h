@@ -9,8 +9,10 @@ private:
 	directions dir;
 	float speed = 10;
 public:
-	Bullet(sf::Vector2f _pos, directions _dir);
+	Bullet(sf::Vector2f _pos, directions _dir, int _dmg);
 	~Bullet();
 	void move();
+	int dmg;
+	bool destroy = false;
 };
 

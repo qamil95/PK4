@@ -2,9 +2,10 @@
 
 
 
-Bullet::Bullet(sf::Vector2f _pos, directions _dir)
+Bullet::Bullet(sf::Vector2f _pos, directions _dir, int _dmg) :
+	dir(_dir),
+	dmg(_dmg)
 {
-	dir = _dir;
 	setSize(sf::Vector2f(8, 8));
 	setOrigin(4, 4);
 	setFillColor(sf::Color(192,192,192,200));
