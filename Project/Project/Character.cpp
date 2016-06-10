@@ -2,7 +2,8 @@
 
 Character::Character(string _type, int _hp, float _movement_speed, float _x, float _y) :
 	hp(_hp),
-	movement_speed(_movement_speed)
+	movement_speed(_movement_speed),
+	direction(UP)
 {
 	string name;
 	name = "files/";

@@ -13,6 +13,7 @@ Player::~Player()
 
 void Player::move(directions dir)
 {
+	direction = dir;
 	switch (dir)
 	{
 	case UP:
@@ -35,6 +36,5 @@ void Player::move(directions dir)
 			Sprite::move(sf::Vector2f(movement_speed, 0));
 		setTextureRect(sf::IntRect(32, 0, 32, 32));
 		break;
-
 	}
 }

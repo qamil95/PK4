@@ -1,7 +1,6 @@
 #include "Enemy.h"
 
 Enemy::Enemy(string _type, int _hp, float _movement_speed, float _x, float _y) :
-	direction(0),
 	counter(0),
 	Character(_type, _hp, _movement_speed, _x, _y) 
 {
@@ -10,6 +9,7 @@ Enemy::Enemy(string _type, int _hp, float _movement_speed, float _x, float _y) :
 
 Enemy::~Enemy()
 {
+	cout << "POSZEDL DESTRUKTOR";
 }
 
 void Enemy::move() //AI losowe
@@ -17,7 +17,7 @@ void Enemy::move() //AI losowe
 	if (counter == 60)
 	{
 		counter = 0;
-		direction = rand() % 4;
+		direction = static_cast<directions>(rand() % 4);
 	}
 	switch (direction)
 	{
@@ -51,6 +51,7 @@ void Enemy::move(sf::Vector2f _player) //AI goniace gracza
 	{
 		Sprite::move(-movement_speed, 0);
 		setTextureRect(sf::IntRect(0, 0, 32, 32));
+		direction = LEFT;
 		while (getPosition().x < _player.x)
 			Sprite::move(1, 0);
 	}		
@@ -58,6 +59,7 @@ void Enemy::move(sf::Vector2f _player) //AI goniace gracza
 	{
 		Sprite::move(movement_speed, 0);
 		setTextureRect(sf::IntRect(32, 0, 32, 32));
+		direction = RIGHT;
 		while (getPosition().x > _player.x)
 			Sprite::move(-1, 0);
 	}		
@@ -66,6 +68,7 @@ void Enemy::move(sf::Vector2f _player) //AI goniace gracza
 	{
 		Sprite::move(0, -movement_speed);
 		setTextureRect(sf::IntRect(0, 32, 32, 32));
+		direction = UP;
 		while (getPosition().y < _player.y)
 			Sprite::move(0, 1);
 	}
@@ -73,6 +76,7 @@ void Enemy::move(sf::Vector2f _player) //AI goniace gracza
 	{
 		Sprite::move(0, movement_speed);
 		setTextureRect(sf::IntRect(32, 32, 32, 32));
+		direction = DOWN;
 		while (getPosition().y > _player.y)
 			Sprite::move(0, -1);
 	}

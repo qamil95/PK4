@@ -41,10 +41,13 @@ void Engine::run()
 				system("PAUSE");		
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
 				createEnemies(1);
-			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size()!=0)
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
+			{
+				delete enemies.back();
 				enemies.pop_back();
+			}				
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Delete))
-				cout << "BREAKPOINT" <<endl;
+				cout << "BREAKPOINT" <<endl;			
 		}
 
 		//ZAMIAST TEGO ZROBIC STAWIANIE WIEZYCZEK
@@ -105,7 +108,14 @@ void Engine::run()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) 
 			player->move(RIGHT);
 
-		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			bullets.push_back(new Bullet(player->getPosition(), player->direction));
+
+
+		//przeliczenie pozycji pociskow
+		for (vector<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
+			(*it)->move();
+
 		info.setString(status());
 		cout << (std::string)info.getString() << endl;
 		refresh();
@@ -212,6 +222,8 @@ void Engine::refresh()
 	for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 		window.draw(**it);
 	window.draw(*player);
+	for (vector<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
+		window.draw(**it);
 	window.draw(info);
 	window.display();
 }
