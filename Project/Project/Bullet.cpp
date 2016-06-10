@@ -5,9 +5,11 @@
 Bullet::Bullet(sf::Vector2f _pos, directions _dir)
 {
 	dir = _dir;
-	setSize(sf::Vector2f(6, 6));
-	setOrigin(3, 3);
-	setFillColor(sf::Color(150,75,0,255));
+	setSize(sf::Vector2f(8, 8));
+	setOrigin(4, 4);
+	setFillColor(sf::Color(192,192,192,200));
+	setOutlineColor(sf::Color(0,0,0,100));
+	setOutlineThickness(1);
 	switch (dir)
 	{
 	case UP:

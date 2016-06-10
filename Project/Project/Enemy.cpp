@@ -9,7 +9,6 @@ Enemy::Enemy(string _type, int _hp, float _movement_speed, float _x, float _y) :
 
 Enemy::~Enemy()
 {
-	cout << "POSZEDL DESTRUKTOR";
 }
 
 void Enemy::move() //AI losowe

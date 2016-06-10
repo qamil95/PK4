@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
+#include <list>
 #include "Bullet.h"
 #include "Character.h"
 #include "Enemy.h"
@@ -24,7 +25,7 @@ private:
 	sf::Clock clock;
 	Player* player;
 	vector<Enemy*> enemies;	
-	vector<Bullet*> bullets;
+	list<Bullet*> bullets;
 	Tile* tiles[40][20];
 	sf::Texture *tileset;
 	sf::Vector2i mouse_tile = { 0,0 };

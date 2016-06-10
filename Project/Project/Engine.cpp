@@ -63,8 +63,6 @@ void Engine::run()
 			tiles[mouse_tile.x][mouse_tile.y]->tType = GRASS;
 		}
 
-
-
 		//SPRAWDZANIE KOLIZJI I RUCH
 		for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
 		{
@@ -108,13 +106,32 @@ void Engine::run()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) 
 			player->move(RIGHT);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-			bullets.push_back(new Bullet(player->getPosition(), player->direction));
-
-
 		//przeliczenie pozycji pociskow
-		for (vector<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
-			(*it)->move();
+		for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
+		{
+			bool destroy = false;
+			(*act)->move();
+			sf::FloatRect tmp = (*act)->getGlobalBounds();
+			if (tmp.intersects(player->getGlobalBounds()))
+				destroy = true;
+			for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
+				if (tmp.intersects((*it)->getGlobalBounds()))
+					destroy = true;
+			for (int i = 0; i < 40; i++)
+				for (int j = 0; j < 20; j++)
+					if ((tiles[i][j]->tType != GRASS) &&
+						(tmp.intersects(tiles[i][j]->getGlobalBounds())))
+						destroy = true;
+			if (destroy)
+			{
+				delete (*act);
+				act = bullets.erase(act);
+			}
+				
+		}
+		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) //nowy strzal, to do poprawki
+			bullets.push_back(new Bullet(player->getPosition(), player->direction));
 
 		info.setString(status());
 		cout << (std::string)info.getString() << endl;
@@ -222,7 +239,7 @@ void Engine::refresh()
 	for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 		window.draw(**it);
 	window.draw(*player);
-	for (vector<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
+	for (list<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
 		window.draw(**it);
 	window.draw(info);
 	window.display();
