@@ -7,7 +7,7 @@ class Bullet :
 {
 private:
 	directions dir;
-	float speed = 10;
+	float speed = 25;
 public:
 	Bullet(sf::Vector2f _pos, directions _dir, int _dmg);
 	~Bullet();

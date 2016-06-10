@@ -130,12 +130,17 @@ void Engine::run()
 						(tmp.intersects(tiles[i][j]->getGlobalBounds())))
 						(*act)->destroy = true;
 			if ((*act)->destroy)
-				(*act)->setFillColor(sf::Color::Red); //to na info o zadanym dmg
+			{
+				(*act)->setFillColor(sf::Color::Red); // zamienic to na info o zadanym dmg
+				(*act)->setSize(sf::Vector2f(20, 20));
+				(*act)->setOrigin(10, 10);
+			}
+				
 		}
 
 
 		//TYMCZASOWE STRZA£Y
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) && (bullets.size() <1))
 			bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
 
 

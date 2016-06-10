@@ -6,8 +6,8 @@ Bullet::Bullet(sf::Vector2f _pos, directions _dir, int _dmg) :
 	dir(_dir),
 	dmg(_dmg)
 {
-	setSize(sf::Vector2f(8, 8));
-	setOrigin(4, 4);
+	setSize(sf::Vector2f(10, 10));
+	setOrigin(5, 5);
 	setFillColor(sf::Color(192,192,192,200));
 	setOutlineColor(sf::Color(0,0,0,100));
 	setOutlineThickness(1);
