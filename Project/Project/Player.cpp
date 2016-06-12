@@ -11,30 +11,30 @@ Player::~Player()
 {
 }
 
-void Player::move(directions dir)
+void Player::move()
 {
-	direction = dir;
-	switch (dir)
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && (getPosition().y > 20) && !collision[UP])
 	{
-	case UP:
-		if ((getPosition().y > 20) && !collision[UP])
-			Sprite::move(sf::Vector2f(0, -movement_speed));
+		Sprite::move(sf::Vector2f(0, -movement_speed));
 		setTextureRect(sf::IntRect(0, 32, 32, 32));
-		break;
-	case DOWN:
-		if ((getPosition().y < 720-64) && !collision[DOWN])
-			Sprite::move(sf::Vector2f(0, movement_speed));
+		direction = UP;
+	}
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && (getPosition().y < 720 - 64) && !collision[DOWN])
+	{
+		Sprite::move(sf::Vector2f(0, movement_speed));
 		setTextureRect(sf::IntRect(32, 32, 32, 32));
-		break;
-	case LEFT:
-		if ((getPosition().x > 0) && !collision[LEFT])
-			Sprite::move(sf::Vector2f(-movement_speed, 0));
+		direction = DOWN;
+	}
+	if ((sf::Keyboard::isKeyPressed(sf::Keyboard::A)) && (getPosition().x > 0) && !collision[LEFT])
+	{
+		Sprite::move(sf::Vector2f(-movement_speed, 0));
 		setTextureRect(sf::IntRect(0, 0, 32, 32));
-		break;
-	case RIGHT:
-		if ((getPosition().x < 1280) && !collision[RIGHT])
-			Sprite::move(sf::Vector2f(movement_speed, 0));
+		direction = LEFT;
+	}
+	if( (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) && (getPosition().x < 1280) && !collision[RIGHT])
+	{
+		Sprite::move(sf::Vector2f(movement_speed, 0));
 		setTextureRect(sf::IntRect(32, 0, 32, 32));
-		break;
+		direction = RIGHT;
 	}
 }

@@ -23,7 +23,7 @@ public:
 	float getMovementSpeed();
 	int getHP();
 	virtual ~Character();
-	virtual void move() {};
+	virtual void move() = 0;
 	void hit(int dmg);
 };
 

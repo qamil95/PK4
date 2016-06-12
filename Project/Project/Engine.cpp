@@ -95,16 +95,7 @@ void Engine::run()
 			for (int j = 0; j < 20; j++)
 				updateCollision(player, tiles[i][j]);		
 		//END SPR KOL
-
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
-			player->move(UP);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-			player->move(DOWN);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-			player->move(LEFT);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) 
-			player->move(RIGHT);
+		player->move();
 
 		//przeliczenie pozycji pociskow
 		for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
