@@ -4,9 +4,12 @@ class Tower :
 	public Tile
 {
 private:
-	directions direction;
+	int ammo, delay, counter;
 public:
-	Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, directions dir);
+	int dmg;
+	directions direction;
+	Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, directions dir = RIGHT);
 	~Tower();
+	bool shoot();
 };
 

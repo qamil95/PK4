@@ -54,13 +54,13 @@ void Engine::run()
 		if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (tiles[mouse_tile.x][mouse_tile.y]->tType == GRASS))
 		{
 			delete tiles[mouse_tile.x][mouse_tile.y];
-			tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), mouse_tile.x, mouse_tile.y, UP);
+			tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30);
 		}
 
 		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 		{
 			delete tiles[mouse_tile.x][mouse_tile.y];
-			tiles[mouse_tile.x][mouse_tile.y] = new Tile(tileset, sf::Vector2i(0, 0), mouse_tile.x, mouse_tile.y, GRASS);
+			tiles[mouse_tile.x][mouse_tile.y] = new Tile(tileset, sf::Vector2i(0, 0), (float)mouse_tile.x, (float)mouse_tile.y, GRASS);
 		}
 
 		//SPRAWDZANIE KOLIZJI I RUCH
@@ -93,9 +93,10 @@ void Engine::run()
 
 		for (int i = 0; i < 40; i++) //ze scianami
 			for (int j = 0; j < 20; j++)
-				updateCollision(player, tiles[i][j]);		
-		//END SPR KOL
+				updateCollision(player, tiles[i][j]);	
 		player->move();
+		//END SPR KOL I RUCH
+
 
 		//przeliczenie pozycji pociskow
 		for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
@@ -134,6 +135,17 @@ void Engine::run()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
 
+		for (int i = 0; i < 40; i++)
+			for (int j = 0; j < 20; j++)
+				if (Tower * tmp = dynamic_cast<Tower*>(tiles[i][j]))
+					if (tmp->shoot())
+					{
+						sf::Vector2f position = tmp->getPosition();
+						position.x += 16;
+						position.y += 16;
+						bullets.push_back(new Bullet(position, tmp->direction, tmp->dmg));
+					}						
+				
 
 		info.setString(status());
 		//cout << (std::string)info.getString() << endl;
