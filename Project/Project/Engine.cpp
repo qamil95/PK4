@@ -39,6 +39,11 @@ void Engine::run()
 				window.close();
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Pause))
 				system("PAUSE");		
+			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
+			{
+				if (Tower* tmp = dynamic_cast<Tower*>(tiles[mouse_tile.x][mouse_tile.y]))
+					tmp->rotate();
+			}
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
 				createEnemies(1);
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
@@ -56,6 +61,7 @@ void Engine::run()
 			delete tiles[mouse_tile.x][mouse_tile.y];
 			tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30);
 		}
+			
 
 		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 		{

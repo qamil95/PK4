@@ -29,3 +29,11 @@ bool Tower::shoot()
 		return false;
 	}
 }
+
+void Tower::rotate()
+{
+	if (direction < 3)
+		direction = (static_cast<directions>(direction + 1));
+	else
+		direction = UP;
+}

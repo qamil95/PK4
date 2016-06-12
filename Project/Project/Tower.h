@@ -11,5 +11,6 @@ public:
 	Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, directions dir = RIGHT);
 	~Tower();
 	bool shoot();
+	void rotate();
 };
 
