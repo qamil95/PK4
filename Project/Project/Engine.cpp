@@ -57,7 +57,7 @@ void Engine::run()
 			tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), mouse_tile.x, mouse_tile.y, UP);
 		}
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 		{
 			delete tiles[mouse_tile.x][mouse_tile.y];
 			tiles[mouse_tile.x][mouse_tile.y] = new Tile(tileset, sf::Vector2i(0, 0), mouse_tile.x, mouse_tile.y, GRASS);
@@ -145,7 +145,7 @@ void Engine::run()
 
 
 		info.setString(status());
-		cout << (std::string)info.getString() << endl;
+		//cout << (std::string)info.getString() << endl;
 		refresh();
 		frame_counter++;
 	}
