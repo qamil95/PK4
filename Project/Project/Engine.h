@@ -9,6 +9,7 @@
 #include "enums.h"
 #include "Player.h"
 #include "Tile.h"
+#include "Tower.h"
 
 
 using namespace std;

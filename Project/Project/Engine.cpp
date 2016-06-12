@@ -11,7 +11,7 @@ Engine::~Engine()
 void Engine::run()
 {
 	initialize(); 
-	player = new Player("player", 100, 5, (float)window.getSize().x / 2, (float)window.getSize().y / 2); //gracz
+	player = new Player("player", 100, 4, (float)window.getSize().x / 2, (float)window.getSize().y / 2); //gracz
 	createEnemies(4);
 
 	//TEMP GENERACJA MAPY
@@ -53,14 +53,14 @@ void Engine::run()
 		//ZAMIAST TEGO ZROBIC STAWIANIE WIEZYCZEK
 		if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (tiles[mouse_tile.x][mouse_tile.y]->tType == GRASS))
 		{
-			tiles[mouse_tile.x][mouse_tile.y]->changeTexture(sf::Vector2i(6, 12));
-			tiles[mouse_tile.x][mouse_tile.y]->tType = WALL;
+			delete tiles[mouse_tile.x][mouse_tile.y];
+			tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), mouse_tile.x, mouse_tile.y, UP);
 		}
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 		{
-			tiles[mouse_tile.x][mouse_tile.y]->changeTexture(sf::Vector2i(0, 0));
-			tiles[mouse_tile.x][mouse_tile.y]->tType = GRASS;
+			delete tiles[mouse_tile.x][mouse_tile.y];
+			tiles[mouse_tile.x][mouse_tile.y] = new Tile(tileset, sf::Vector2i(0, 0), mouse_tile.x, mouse_tile.y, GRASS);
 		}
 
 		//SPRAWDZANIE KOLIZJI I RUCH
@@ -140,7 +140,7 @@ void Engine::run()
 
 
 		//TYMCZASOWE STRZA£Y
-		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) && (bullets.size() <1))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
 
 
