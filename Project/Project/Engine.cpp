@@ -17,8 +17,8 @@ Engine::Engine(int trees)
 	info.setFont(font);
 	info.setCharacterSize(14);
 	info.setColor(sf::Color::White);
-	info.setPosition(sf::Vector2f(0, 32 * 20 + 20));
-	info.setString("TESTOWY NAPISIK Z INFORMACJAMI");
+	info.setPosition(sf::Vector2f(6, 32 * 20 + 26));
+	info.setString("TESTOWY NAPISIK Z INFORMACJAMI\nLN2\nLN3");
 
 	//Open tileset
 	tileset = new (sf::Texture);
@@ -45,7 +45,9 @@ Engine::Engine(int trees)
 			tiles[x][y]->tType = WALL;
 		}
 	}
-	player = new Player("player", 100, 4, (float)window.getSize().x / 2, (float)window.getSize().y / 2); //gracz
+
+	//player and enemies
+	player = new Player("player", 100, 4, (float)window.getSize().x / 2, (float)window.getSize().y / 2);
 	createEnemies(4);
 }
 
@@ -257,7 +259,7 @@ void Engine::createEnemies(int number)
 void Engine::createTower()
 {
 	delete tiles[mouse_tile.x][mouse_tile.y];
-	tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30, 20);
+	tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 15), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30, 20);
 }
 
 void Engine::deleteTower()

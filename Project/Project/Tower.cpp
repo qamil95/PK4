@@ -10,6 +10,18 @@ Tower::Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dm
 	delay(_delay),
 	counter(_delay)
 {
+	switch (direction)
+	{
+	case DOWN:
+		changeTexture(sf::Vector2i(7, 13));
+		break;
+	case LEFT:
+		changeTexture(sf::Vector2i(7, 14));
+		break;
+	case UP:
+		changeTexture(sf::Vector2i(7, 12));
+		break;
+	}
 }
 
 
@@ -38,15 +50,19 @@ void Tower::rotate()
 	{
 	case UP:
 		direction = RIGHT;
+		changeTexture(sf::Vector2i(7,15));
 		break;
 	case DOWN:
 		direction = LEFT;
+		changeTexture(sf::Vector2i(7, 14));
 		break;
 	case LEFT:
 		direction = UP;
+		changeTexture(sf::Vector2i(7, 12));
 		break;
 	case RIGHT:
-		direction = DOWN;
+		direction = DOWN; 
+		changeTexture(sf::Vector2i(7, 13));
 		break;
 	}
 }
