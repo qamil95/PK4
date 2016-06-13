@@ -155,7 +155,7 @@ void Engine::run()
 						{
 							(*act)->destroy = true;
 							if (Tower* tmp = dynamic_cast<Tower*>(tiles[i][j]))
-								tmp->hit((*act)->dmg);
+								tmp->hit((*act)->dmg);							
 						}
 							
 				if ((*act)->destroy)

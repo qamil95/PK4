@@ -14,10 +14,8 @@ class Character :
 private:
 	sf::Texture *texture;
 protected:	
-	int hp;
 	float movement_speed;
 public:
-	bool dead = false;
 	bool collision[4];
 	directions direction;
 	Character(string _type, int _hp, float _movement_speed, float _x, float _y);
@@ -26,6 +24,5 @@ public:
 	int getHP();
 	virtual ~Character();
 	virtual void move() = 0;
-	void hit(int dmg);
 };
 

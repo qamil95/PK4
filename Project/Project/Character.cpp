@@ -1,7 +1,7 @@
 #include "Character.h"
 
 Character::Character(string _type, int _hp, float _movement_speed, float _x, float _y) :
-	hp(_hp),
+	Hitable(_hp),
 	movement_speed(_movement_speed),
 	direction(UP)
 {
@@ -41,12 +41,4 @@ int Character::getHP()
 Character::~Character()
 {
 	delete texture;
-}
-
-void Character::hit(int dmg)
-{
-	hp -= dmg;
-	if (hp <= 0)
-		dead = true;
-	setColor(sf::Color(255, 0, 0, 180));
 }
