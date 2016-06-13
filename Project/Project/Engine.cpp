@@ -35,7 +35,7 @@ Engine::Engine(int trees)
 				tiles[i][j] = new Tile(tileset, sf::Vector2i(0, 0), (float)i, (float)j, GRASS);
 		}
 
-	player = new Player("player", 100, 4, (float)window.getSize().x * 1 / 4, (float)window.getSize().y / 2);	
+	player = new Player("player", 100, 4, (float)window.getSize().x / 6, (float)window.getSize().y / 2);	
 
 	//add trees
 	for (int i = 0; i < trees; i++)
@@ -80,7 +80,7 @@ void Engine::run()
 				if (Tower* tmp = dynamic_cast<Tower*>(tiles[mouse_tile.x][mouse_tile.y]))
 					tmp->rotate();
 				else if (tiles[mouse_tile.x][mouse_tile.y]->tType == GRASS)
-					createTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
+					buildTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
 			}
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 				deleteTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
@@ -243,15 +243,24 @@ void Engine::createEnemies()
 	for (int i = 0; i < enemiesToCreate; i++) //przeciwnicy
 	{
 		float x, y;
-		bool ok = false;
-		while (!ok)
+		bool ok;
+		do
 		{
-			x = (float)(rand() % window_size_x/2 + window_size_x/2 -48) ;
-			y = (float)(rand() % window_size_y) +72;
-			if (y > 612)
-				continue;				
 			ok = true;
-		}
+			x = (float)(rand() % (3*window_size_x/5) + (2*window_size_x/5) -48) ;
+			y = (float)(rand() % 612) +68;
+			if (y > 612)
+				ok = false;
+
+			for (int i = 0; i < 40; i++)
+				for (int j = 0; j < 20; j++)
+					if (tiles[i][j]->tType != GRASS && tiles[i][j]->getGlobalBounds().intersects(sf::FloatRect(x - 16, y - 16, 32, 32)))
+						ok = false;
+
+			for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
+				if ((*it)->getGlobalBounds().intersects(sf::FloatRect(x - 16, y - 16, 32, 32)))
+					ok = false;
+		} while (!ok);
 
 		int type = rand() % 2;
 		switch (type)
@@ -266,7 +275,7 @@ void Engine::createEnemies()
 	}
 }
 
-void Engine::createTower(sf::Vector2i pos)
+void Engine::buildTower(sf::Vector2i pos)
 {
 	if (player->changeMoney(-100))
 	{

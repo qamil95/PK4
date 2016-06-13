@@ -34,7 +34,7 @@ private:
 	Tile* tiles[40][20];
 	sf::Texture *tileset;
 	sf::Vector2i mouse_tile = { 0,0 };
-	string msg = "Wiadomosci: w czasie pauzy mozna wszystko poza chodzeniem i strzelaniem!";
+	string msg = "W czasie pauzy mozna wszystko poza chodzeniem i strzelaniem! ~pasek wiadomosci";
 public:
 	Engine(int trees);
 	~Engine();
@@ -42,7 +42,7 @@ public:
 	void updateMousePosition();
 	void updateCollision(Character* _active, sf::Sprite* _reference, float _range = 0);
 	void createEnemies();
-	void createTower(sf::Vector2i pos);
+	void buildTower(sf::Vector2i pos);
 	void deleteTower(sf::Vector2i pos);
 	void refresh();
 	string status();

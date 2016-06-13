@@ -59,7 +59,13 @@ bool Player::changeMoney(int _money, int _points)
 
 bool Player::buyAmmo()
 {
-	if (money > 100)
+	if (money > 1000)
+	{
+		money -= 100;
+		ammo += 1000;
+		return true;
+	}
+	else if (money > 100)
 	{
 		money-= 10;
 		ammo += 100;
