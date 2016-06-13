@@ -3,8 +3,9 @@
 class Hitable
 {
 protected:
-	int hp;
+	int HP;
 public:
+	int maxHP;
 	bool dead = false;
 	Hitable(int _hp);
 	~Hitable();

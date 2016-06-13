@@ -32,12 +32,6 @@ float Character::getMovementSpeed()
 	return movement_speed;
 }
 
-int Character::getHP()
-{
-	return hp;
-}
-
-
 Character::~Character()
 {
 	delete texture;

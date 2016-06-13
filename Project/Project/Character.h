@@ -21,7 +21,6 @@ public:
 	Character(string _type, int _hp, float _movement_speed, float _x, float _y);
 	sf::Vector2i getPositionTile();
 	float getMovementSpeed();
-	int getHP();
 	virtual ~Character();
 	virtual void move() = 0;
 };

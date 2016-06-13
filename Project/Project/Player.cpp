@@ -45,14 +45,60 @@ void Player::move()
 	}
 }
 
+bool Player::changeMoney(int _money, int _points)
+{
+	if (money + _money > 0)
+	{
+		money += _money;
+		points += _points;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Player::buyAmmo()
+{
+	if (money > 100)
+	{
+		money-= 10;
+		ammo += 100;
+		return true;
+	}
+	else if (money > 0)
+	{
+		money--;
+		ammo += 10;
+		return true;
+	}
+	else
+		return false;
+}
+
 string Player::status()
 {
 	string tmp;
 	tmp = "PLAYER INFO:\tHP: ";
-	tmp += to_string(hp);
+	tmp += to_string(HP);
 	tmp += "\tAMMO: ";
 	tmp += to_string(ammo);
+	tmp += "\tDMG: ";
+	tmp += to_string(dmg);
 	tmp += "\tMONEY: ";
 	tmp += to_string(money);
+	tmp += "\tPOINTS: ";
+	tmp += to_string(points);
 	return tmp;
+}
+
+Bullet * Player::shoot()
+{
+	if (ammo > 0) //moze strzelic
+	{
+		ammo--;
+		sf::Vector2f position = getPosition();
+		return new Bullet(position, direction, dmg);
+	}
+	else
+		return NULL;
 }

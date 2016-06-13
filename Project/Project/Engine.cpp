@@ -47,7 +47,7 @@ Engine::Engine(int trees)
 
 	//player and enemies
 	player = new Player("player", 100, 4, (float)window.getSize().x *1 /4, (float)window.getSize().y / 2);
-	createEnemies(4);
+	createEnemies(5);
 }
 
 Engine::~Engine()
@@ -81,10 +81,9 @@ void Engine::run()
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 				deleteTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::K))
-			{
-				player->money--;
-				player->ammo += 10;
-			}
+				if (!player->buyAmmo())
+					sendMsg("Za malo pieniedzy!");
+
 			//ONLY DEBUG:
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
 				createEnemies(1);
@@ -171,31 +170,23 @@ void Engine::run()
 
 			}
 
-
-			//TYMCZASOWE STRZA£Y
+			//strzal gracza
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-			{
-				if ((player->ammo) > 0)
-				{
-					bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
-					player->ammo--;
-				}
+				if (Bullet* bull = player->shoot())
+					bullets.push_back(bull);
 				else
-					sendMsg("Brak amunicji! K zeby kupic");
-			}
-				
+					sendMsg("Brak amunicji! K zeby kupic");				
 
+			//strzal wiezyczek
 			for (int i = 0; i < 40; i++)
 				for (int j = 0; j < 20; j++)
 					if (Tower * tmp = dynamic_cast<Tower*>(tiles[i][j]))
 						if (Bullet* bull = tmp->shoot())
 							bullets.push_back(bull);
-		}
-				
+		}				
 
 		stat.setString(status());
-		info.setString(player->status() + "\nWolna linia na informacje" + '\n' + msg);
-		//cout << (std::string)stat.getString() << endl;
+		info.setString(player->status() + '\n' + msg + "\nWSAD-Chodzenie | Spacja-strzal | K-Kup amunicje(0.1) | LMP-Obroc/postaw wieze(100) | PPM-Usun wieze");
 		refresh();
 		frame_counter++;
 	}
@@ -273,8 +264,13 @@ void Engine::createEnemies(int number)
 
 void Engine::createTower(sf::Vector2i pos)
 {
-	delete tiles[pos.x][pos.y];
-	tiles[pos.x][pos.y] = new Tower(tileset, sf::Vector2i(7, 15), (float)pos.x, (float)pos.y, 10, 30, 20, 100);
+	if (player->changeMoney(-100))
+	{
+		delete tiles[pos.x][pos.y];
+		tiles[pos.x][pos.y] = new Tower(tileset, sf::Vector2i(7, 15), (float)pos.x, (float)pos.y, 10, 30, 100, 100);
+	}
+	else
+		sendMsg("Za malo pieniedzy!");
 }
 
 void Engine::deleteTower(sf::Vector2i pos)
@@ -299,7 +295,6 @@ void Engine::refresh()
 	window.display();
 	
 	//czyszczenie martwych
-	player->setColor(sf::Color::White);
 	for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
 		if ((*act)->destroy)
 		{
@@ -310,10 +305,10 @@ void Engine::refresh()
 	for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
 		if ((*act)->dead)
 		{
+			player->changeMoney((*act)->maxHP / 10, (*act)->maxHP / 10);
 			delete (*act);
 			enemies.erase(act);
-			act--;
-			player->money += 10;
+			act--;			
 		}
 		else
 			(*act)->setColor(sf::Color::White);
@@ -349,8 +344,6 @@ string Engine::status()
 	tmp += to_string(mouse_tile.x);
 	tmp += 'x';
 	tmp += to_string(mouse_tile.y);
-	tmp += "\tHP: ";
-	tmp += to_string(player->getHP());
 	tmp += "\tBULLETS: ";
 	tmp += to_string(bullets.size());
 	return tmp;

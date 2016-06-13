@@ -1,7 +1,8 @@
 #include "Hitable.h"
 
 Hitable::Hitable(int _hp):
-	hp(_hp)
+	HP(_hp),
+	maxHP(_hp)
 {
 }
 
@@ -11,7 +12,7 @@ Hitable::~Hitable()
 
 void Hitable::hit(int dmg)
 {
-	hp -= dmg;
-	if (hp <= 0)
+	HP -= dmg;
+	if (HP <= 0)
 		dead = true;
 }
