@@ -103,6 +103,11 @@ bool Player::buyAmmo()
 		return false;
 }
 
+int Player::getPoints()
+{
+	return points;
+}
+
 string Player::status()
 {
 	string tmp;

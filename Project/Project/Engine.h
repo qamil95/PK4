@@ -48,5 +48,6 @@ public:
 	string status();
 	void sendMsg(string _msg);
 	void noEnemies();
+	void gameOver();
 };
 

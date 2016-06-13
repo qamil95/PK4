@@ -16,6 +16,7 @@ public:
 	bool increaseDMG();
 	bool changeMoney(int _money, int _points = 0);
 	bool buyAmmo();
+	int getPoints();
 	string status();
 	Bullet* shoot();
 };

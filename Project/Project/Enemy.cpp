@@ -121,7 +121,7 @@ void Enemy::attack(Player * player)
 	}
 	if ((hitbox.getGlobalBounds().intersects(pla)) && 
 		((counter==0) || 
-		((move_type == 1) && (counter%20 == 0))))
+		((move_type == 1) && (counter%15 == 0))))
 	{
 		player->hit(dmg);
 		player->setColor(sf::Color::Red);

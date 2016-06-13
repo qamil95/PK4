@@ -203,6 +203,8 @@ void Engine::run()
 		frame_counter++;
 		if (enemies.size() == 0)
 			noEnemies();
+		if (player->dead)
+			gameOver();
 	}
 }
 
@@ -328,7 +330,7 @@ void Engine::refresh()
 	for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
 		if ((*act)->dead)
 		{
-			player->changeMoney((*act)->maxHP / 10, (*act)->maxHP / 10);
+			player->changeMoney((*act)->maxHP / 5, (*act)->maxHP / 10);
 			delete (*act);
 			enemies.erase(act);
 			act--;			
@@ -398,4 +400,35 @@ void Engine::noEnemies()
 		sendMsg(to_string(enemiesToCreate) + " nowych przeciwnikow! Automatyczna pauza.");
 		timer = sf::seconds(0);
 	}
+}
+
+void Engine::gameOver()
+{
+	stat.setPosition(window_size_x / 2, window_size_y / 2);
+	stat.setCharacterSize(20);
+	stat.setString("GAME OVER!\nRESULT: " + to_string(player->getPoints()) + "\nESC TO QUIT");
+	
+	while (window.isOpen())
+	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
+				window.close();
+		}
+		window.clear();
+		window.draw(stat);
+		window.display();
+	}
+	delete player;
+	delete tileset;
+	for (int i = 0; i < 40; i++)
+		for (int j = 0; j < 20; j++)
+			delete tiles[i][j];
+	for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
+		delete (*act);
+	for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
+		delete (*act);	
 }
