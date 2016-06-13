@@ -32,8 +32,19 @@ bool Tower::shoot()
 
 void Tower::rotate()
 {
-	if (direction < 3)
-		direction = (static_cast<directions>(direction + 1));
-	else
+	switch (direction)
+	{
+	case UP:
+		direction = RIGHT;
+		break;
+	case DOWN:
+		direction = LEFT;
+		break;
+	case LEFT:
 		direction = UP;
+		break;
+	case RIGHT:
+		direction = DOWN;
+		break;
+	}
 }

@@ -31,14 +31,14 @@ private:
 	sf::Texture *tileset;
 	sf::Vector2i mouse_tile = { 0,0 };
 public:
-
-	Engine();
+	Engine(int trees);
 	~Engine();
 	void run();
-	void initialize();
 	void updateMousePosition();
 	void updateCollision(Character* _active, sf::Sprite* _reference, float _range = 0);
 	void createEnemies(int number);
+	void createTower();
+	void deleteTower();
 	void refresh();
 	string status();
 };

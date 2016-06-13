@@ -1,7 +1,46 @@
 #include "Engine.h"
 
-Engine::Engine()
+Engine::Engine(int trees)
 {
+	srand((unsigned int)time(NULL));
+
+	window.create(sf::VideoMode(window_size_x, window_size_y), "Projekt PK4", sf::Style::Close);
+	window.setFramerateLimit(60);
+	window.setVerticalSyncEnabled(true);
+
+	font.loadFromFile("files/arial.ttf");
+	info.setFont(font);
+	info.setCharacterSize(16);
+	info.setColor(sf::Color::White);
+	info.setPosition(sf::Vector2f(0, 0));
+
+	//Open tileset
+	tileset = new (sf::Texture);
+	tileset->loadFromFile("files/tileset.png");
+
+	//create map
+	for (int i = 0; i<40; i++)
+		for (int j = 0; j < 20; j++)
+		{
+			if ((i == 0) || (i == 39) || (j == 0) || (j == 19))
+				tiles[i][j] = new Tile(tileset, sf::Vector2i(10, 0), (float)i, (float)j, WALL);
+			else
+				tiles[i][j] = new Tile(tileset, sf::Vector2i(0, 0), (float)i, (float)j, GRASS);
+		}
+
+	//add trees
+	for (int i = 0; i < trees; i++)
+	{
+		int x = rand() % 40;
+		int y = rand() % 20;
+		if (tiles[x][y]->tType == GRASS)
+		{
+			tiles[x][y]->changeTexture(sf::Vector2i(5, 19)); 
+			tiles[x][y]->tType = WALL;
+		}
+	}
+	player = new Player("player", 100, 4, (float)window.getSize().x / 2, (float)window.getSize().y / 2); //gracz
+	createEnemies(4);
 }
 
 Engine::~Engine()
@@ -9,25 +48,8 @@ Engine::~Engine()
 }
 
 void Engine::run()
-{
-	initialize(); 
-	player = new Player("player", 100, 4, (float)window.getSize().x / 2, (float)window.getSize().y / 2); //gracz
-	createEnemies(4);
-
-	//TEMP GENERACJA MAPY
-	for (int i = 0; i<40; i++)
-		for (int j = 0; j < 20; j++)
-		{
-			if ((i==0) || (i==39) || (j==0) || (j==19))
-				tiles[i][j] = new Tile(tileset, sf::Vector2i(10, 0), (float)i, (float)j, WALL);
-			else
-				tiles[i][j] = new Tile(tileset, sf::Vector2i(0, 0), (float)i, (float)j, GRASS);
-		}			
-	tiles[10][10]->changeTexture(sf::Vector2i(5, 19)); //tymczasowe postawienie drzewa
-	tiles[10][10]->tType = WALL;
-	//END GENERACJA MAPY
-		
-	while (window.isOpen())
+{		
+	while (window.isOpen()) //main loop
 	{
 		sf::Event event;
 		updateMousePosition();
@@ -43,7 +65,11 @@ void Engine::run()
 			{
 				if (Tower* tmp = dynamic_cast<Tower*>(tiles[mouse_tile.x][mouse_tile.y]))
 					tmp->rotate();
+				else if (tiles[mouse_tile.x][mouse_tile.y]->tType == GRASS)
+					createTower();
 			}
+			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
+				deleteTower();
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
 				createEnemies(1);
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
@@ -55,19 +81,6 @@ void Engine::run()
 				cout << "BREAKPOINT" <<endl;			
 		}
 
-		//ZAMIAST TEGO ZROBIC STAWIANIE WIEZYCZEK
-		if ((sf::Mouse::isButtonPressed(sf::Mouse::Left)) && (tiles[mouse_tile.x][mouse_tile.y]->tType == GRASS))
-		{
-			delete tiles[mouse_tile.x][mouse_tile.y];
-			tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30);
-		}
-			
-
-		if ((sf::Mouse::isButtonPressed(sf::Mouse::Right)) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
-		{
-			delete tiles[mouse_tile.x][mouse_tile.y];
-			tiles[mouse_tile.x][mouse_tile.y] = new Tile(tileset, sf::Vector2i(0, 0), (float)mouse_tile.x, (float)mouse_tile.y, GRASS);
-		}
 
 		//SPRAWDZANIE KOLIZJI I RUCH
 		for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
@@ -160,26 +173,6 @@ void Engine::run()
 	}
 }
 
-void Engine::initialize()
-{
-	srand((unsigned int)time(NULL));
-
-	window.create(sf::VideoMode(window_size_x, window_size_y), "Projekt PK4",sf::Style::Close);
-	window.setFramerateLimit(60);
-	window.setVerticalSyncEnabled(true);
-
-	font.loadFromFile("files/arial.ttf");
-	info.setFont(font);
-	info.setString("Test");
-	info.setCharacterSize(16);
-	info.setColor(sf::Color::White);
-	info.setPosition(sf::Vector2f(0, 0));
-
-	//Open tileset
-	tileset = new (sf::Texture);
-	tileset->loadFromFile("files/tileset.png");
-}
-
 void Engine::updateMousePosition()
 {
 	if ((sf::Mouse::getPosition(window).x < window_size_x) && (sf::Mouse::getPosition(window).y < window_size_y - 64) && (sf::Mouse::getPosition(window).x > 0) && (sf::Mouse::getPosition(window).y > 20))
@@ -248,6 +241,18 @@ void Engine::createEnemies(int number)
 			break;
 		}		
 	}
+}
+
+void Engine::createTower()
+{
+	delete tiles[mouse_tile.x][mouse_tile.y];
+	tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30);
+}
+
+void Engine::deleteTower()
+{
+	delete tiles[mouse_tile.x][mouse_tile.y];
+	tiles[mouse_tile.x][mouse_tile.y] = new Tile(tileset, sf::Vector2i(0, 0), (float)mouse_tile.x, (float)mouse_tile.y, GRASS);
 }
 
 void Engine::refresh()
