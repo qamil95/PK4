@@ -80,7 +80,11 @@ void Engine::run()
 			}
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 				deleteTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
-
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::K))
+			{
+				player->money--;
+				player->ammo += 10;
+			}
 			//ONLY DEBUG:
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
 				createEnemies(1);
@@ -170,7 +174,16 @@ void Engine::run()
 
 			//TYMCZASOWE STRZA£Y
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-				bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
+			{
+				if ((player->ammo) > 0)
+				{
+					bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
+					player->ammo--;
+				}
+				else
+					sendMsg("Brak amunicji! K zeby kupic");
+			}
+				
 
 			for (int i = 0; i < 40; i++)
 				for (int j = 0; j < 20; j++)
@@ -181,12 +194,14 @@ void Engine::run()
 							position.x += 16;
 							position.y += 16;
 							bullets.push_back(new Bullet(position, tmp->direction, tmp->dmg));
+							if (tmp->ammo < 4)
+								sendMsg("Koncowka amunicji w " + to_string(i) + 'x' + to_string(j) + '!');
 						}
 		}
 				
 
 		stat.setString(status());
-		info.setString(player->status() + "\nLN2" + "\nLN3");
+		info.setString(player->status() + "\nWolna linia na informacje" + '\n' + msg);
 		//cout << (std::string)stat.getString() << endl;
 		refresh();
 		frame_counter++;
@@ -290,7 +305,7 @@ void Engine::refresh()
 	window.draw(info);
 	window.display();
 	
-	//czyszczenie martwych i naprawa uderzonych
+	//czyszczenie martwych
 	player->setColor(sf::Color::White);
 	for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
 		if ((*act)->destroy)
@@ -312,10 +327,8 @@ void Engine::refresh()
 	for (int i = 0; i < 40; i++)
 		for (int j = 0; j < 20; j++)
 			if (Tower* tmp = dynamic_cast<Tower*>(tiles[i][j]))
-				if (tmp->dead)
-					deleteTower(sf::Vector2i(i, j));
-				else
-					tiles[i][j]->setColor(sf::Color::White);
+				if ((tmp->dead) || (tmp->ammo == 0))
+					deleteTower(sf::Vector2i(i, j));					
 }
 
 
@@ -348,4 +361,13 @@ string Engine::status()
 	tmp += "\tBULLETS: ";
 	tmp += to_string(bullets.size());
 	return tmp;
+}
+
+void Engine::sendMsg(string _msg)
+{
+	string old = msg;
+	msg = _msg;
+	msg += '\t' + old;
+	if (msg.length() > 200)
+		msg.resize(200);
 }

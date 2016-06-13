@@ -2,7 +2,8 @@
 
 Player::Player(string _type, int _hp, float _movement_speed, float _x, float _y) :
 	Character(_type, _hp, _movement_speed, _x, _y),
-	money(0)
+	money(0),
+	ammo(50)
 {
 	for (int i = 0; i < 4; i++)
 		collision[i] = false;
@@ -49,6 +50,8 @@ string Player::status()
 	string tmp;
 	tmp = "PLAYER INFO:\tHP: ";
 	tmp += to_string(hp);
+	tmp += "\tAMMO: ";
+	tmp += to_string(ammo);
 	tmp += "\tMONEY: ";
 	tmp += to_string(money);
 	return tmp;

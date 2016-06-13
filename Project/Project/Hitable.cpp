@@ -1,12 +1,9 @@
 #include "Hitable.h"
 
-
-
 Hitable::Hitable(int _hp):
 	hp(_hp)
 {
 }
-
 
 Hitable::~Hitable()
 {

@@ -10,4 +10,3 @@ public:
 	~Hitable();
 	void hit(int dmg);
 };
-

@@ -32,6 +32,7 @@ private:
 	Tile* tiles[40][20];
 	sf::Texture *tileset;
 	sf::Vector2i mouse_tile = { 0,0 };
+	string msg = "pasek wiadomosci";
 public:
 	Engine(int trees);
 	~Engine();
@@ -43,5 +44,6 @@ public:
 	void deleteTower(sf::Vector2i pos);
 	void refresh();
 	string status();
+	void sendMsg(string _msg);
 };
 
