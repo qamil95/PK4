@@ -38,8 +38,8 @@ public:
 	void updateMousePosition();
 	void updateCollision(Character* _active, sf::Sprite* _reference, float _range = 0);
 	void createEnemies(int number);
-	void createTower();
-	void deleteTower();
+	void createTower(sf::Vector2i pos);
+	void deleteTower(sf::Vector2i pos);
 	void refresh();
 	string status();
 };

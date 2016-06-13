@@ -2,13 +2,14 @@
 
 
 
-Tower::Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, int _ammo, directions dir) :
+Tower::Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, int _ammo, int _hp, directions dir) :
 	Tile(_tileset, tile, i, j, TOWER),
 	direction(dir),
 	ammo(_ammo),
 	dmg(_dmg),
 	delay(_delay),
-	counter(_delay)
+	counter(_delay),
+	hp(_hp)
 {
 	switch (direction)
 	{
@@ -65,4 +66,9 @@ void Tower::rotate()
 		changeTexture(sf::Vector2i(7, 13));
 		break;
 	}
+}
+
+void Tower::hit(int dmg)
+{
+	hp -= dmg;
 }

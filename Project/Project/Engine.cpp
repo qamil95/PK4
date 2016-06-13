@@ -77,10 +77,10 @@ void Engine::run()
 				if (Tower* tmp = dynamic_cast<Tower*>(tiles[mouse_tile.x][mouse_tile.y]))
 					tmp->rotate();
 				else if (tiles[mouse_tile.x][mouse_tile.y]->tType == GRASS)
-					createTower();
+					createTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
 			}
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
-				deleteTower();
+				deleteTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
 				createEnemies(1);
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
@@ -151,7 +151,12 @@ void Engine::run()
 					for (int j = 0; j < 20; j++)
 						if ((tiles[i][j]->tType != GRASS) &&
 							(tmp.intersects(tiles[i][j]->getGlobalBounds())))
+						{
 							(*act)->destroy = true;
+							if (Tower* tmp = dynamic_cast<Tower*>(tiles[i][j]))
+								tmp->hit((*act)->dmg);
+						}
+							
 				if ((*act)->destroy)
 				{
 					(*act)->setFillColor(sf::Color::Red); // zamienic to na info o zadanym dmg
@@ -256,16 +261,16 @@ void Engine::createEnemies(int number)
 	}
 }
 
-void Engine::createTower()
+void Engine::createTower(sf::Vector2i pos)
 {
-	delete tiles[mouse_tile.x][mouse_tile.y];
-	tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 15), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30, 20);
+	delete tiles[pos.x][pos.y];
+	tiles[pos.x][pos.y] = new Tower(tileset, sf::Vector2i(7, 15), (float)pos.x, (float)pos.y, 10, 30, 20, 100);
 }
 
-void Engine::deleteTower()
+void Engine::deleteTower(sf::Vector2i pos)
 {
-	delete tiles[mouse_tile.x][mouse_tile.y];
-	tiles[mouse_tile.x][mouse_tile.y] = new Tile(tileset, sf::Vector2i(0, 0), (float)mouse_tile.x, (float)mouse_tile.y, GRASS);
+	delete tiles[pos.x][pos.y];
+	tiles[pos.x][pos.y] = new Tile(tileset, sf::Vector2i(0, 0), (float)pos.x, (float)pos.y, GRASS);
 }
 
 void Engine::refresh()
@@ -297,6 +302,11 @@ void Engine::refresh()
 			enemies.erase(act);
 			act--;
 		}
+	for(int i=0; i<40; i++)
+		for (int j = 0; j < 20; j++)
+			if (Tower* tmp = dynamic_cast<Tower*>(tiles[i][j]))
+				if (tmp->hp <= 0)
+					deleteTower(sf::Vector2i(i, j));
 }
 
 
