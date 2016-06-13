@@ -9,10 +9,16 @@ Engine::Engine(int trees)
 	window.setVerticalSyncEnabled(true);
 
 	font.loadFromFile("files/arial.ttf");
+	stat.setFont(font);
+	stat.setCharacterSize(16);
+	stat.setColor(sf::Color::White);
+	stat.setPosition(sf::Vector2f(0, 0));
+
 	info.setFont(font);
-	info.setCharacterSize(16);
+	info.setCharacterSize(14);
 	info.setColor(sf::Color::White);
-	info.setPosition(sf::Vector2f(0, 0));
+	info.setPosition(sf::Vector2f(0, 32 * 20 + 20));
+	info.setString("TESTOWY NAPISIK Z INFORMACJAMI");
 
 	//Open tileset
 	tileset = new (sf::Texture);
@@ -60,7 +66,10 @@ void Engine::run()
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
 				window.close();
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Pause))
-				system("PAUSE");		
+				if (pause)
+					pause = false;
+				else
+					pause = true;
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))
 			{
 				if (Tower* tmp = dynamic_cast<Tower*>(tiles[mouse_tile.x][mouse_tile.y]))
@@ -81,93 +90,95 @@ void Engine::run()
 				cout << "BREAKPOINT" <<endl;			
 		}
 
-
-		//SPRAWDZANIE KOLIZJI I RUCH
-		for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
+		if (!pause)
 		{
-			for (int i = 0; i < 4; i++)
-				(*act)->collision[i] = false; //reset kolizji
-
-			updateCollision((*act), player, 8); //z graczem
-
-			for (vector<Enemy*>::iterator ref = enemies.begin(); ref != enemies.end(); ++ref) 
-				if (ref != act)
-					updateCollision((*act), (*ref)); //z innymi przeciwnikami
-
-			for (int i=0; i<40; i++) //ze scianami
-				for (int j = 0; j < 20; j++)
-					updateCollision((*act), tiles[i][j]);
-
-			if ((*act)->move_type == 0) //ruch przeciwnikow
-				(*act)->move(player->getPosition());
-			else
-				(*act)->move();
-		}
-		
-		for (int i = 0; i < 4; i++)
-			player->collision[i] = false; //reset kolizji gracza
-
-		for (vector<Enemy*>::iterator ref = enemies.begin(); ref != enemies.end(); ++ref)
-			updateCollision(player, (*ref), 8); //z przeciwnikami
-
-		for (int i = 0; i < 40; i++) //ze scianami
-			for (int j = 0; j < 20; j++)
-				updateCollision(player, tiles[i][j]);	
-		player->move();
-		//END SPR KOL I RUCH
-
-
-		//przeliczenie pozycji pociskow
-		for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
-		{
-			(*act)->move();
-			sf::FloatRect tmp = (*act)->getGlobalBounds();
-			if (tmp.intersects(player->getGlobalBounds()))
+			//SPRAWDZANIE KOLIZJI I RUCH
+			for (vector<Enemy*>::iterator act = enemies.begin(); act != enemies.end(); ++act)
 			{
-				(*act)->destroy = true;
-				player->hit((*act)->dmg);
+				for (int i = 0; i < 4; i++)
+					(*act)->collision[i] = false; //reset kolizji
+
+				updateCollision((*act), player, 8); //z graczem
+
+				for (vector<Enemy*>::iterator ref = enemies.begin(); ref != enemies.end(); ++ref)
+					if (ref != act)
+						updateCollision((*act), (*ref)); //z innymi przeciwnikami
+
+				for (int i = 0; i<40; i++) //ze scianami
+					for (int j = 0; j < 20; j++)
+						updateCollision((*act), tiles[i][j]);
+
+				if ((*act)->move_type == 0) //ruch przeciwnikow
+					(*act)->move(player->getPosition());
+				else
+					(*act)->move();
 			}
-				
-			for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
-				if (tmp.intersects((*it)->getGlobalBounds()))
+
+			for (int i = 0; i < 4; i++)
+				player->collision[i] = false; //reset kolizji gracza
+
+			for (vector<Enemy*>::iterator ref = enemies.begin(); ref != enemies.end(); ++ref)
+				updateCollision(player, (*ref), 8); //z przeciwnikami
+
+			for (int i = 0; i < 40; i++) //ze scianami
+				for (int j = 0; j < 20; j++)
+					updateCollision(player, tiles[i][j]);
+			player->move();
+			//END SPR KOL I RUCH
+
+
+			//przeliczenie pozycji pociskow
+			for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
+			{
+				(*act)->move();
+				sf::FloatRect tmp = (*act)->getGlobalBounds();
+				if (tmp.intersects(player->getGlobalBounds()))
 				{
 					(*act)->destroy = true;
-					(*it)->hit((*act)->dmg);
+					player->hit((*act)->dmg);
 				}
-					
+
+				for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
+					if (tmp.intersects((*it)->getGlobalBounds()))
+					{
+						(*act)->destroy = true;
+						(*it)->hit((*act)->dmg);
+					}
+
+				for (int i = 0; i < 40; i++)
+					for (int j = 0; j < 20; j++)
+						if ((tiles[i][j]->tType != GRASS) &&
+							(tmp.intersects(tiles[i][j]->getGlobalBounds())))
+							(*act)->destroy = true;
+				if ((*act)->destroy)
+				{
+					(*act)->setFillColor(sf::Color::Red); // zamienic to na info o zadanym dmg
+					(*act)->setSize(sf::Vector2f(20, 20));
+					(*act)->setOrigin(10, 10);
+				}
+
+			}
+
+
+			//TYMCZASOWE STRZA£Y
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
+
 			for (int i = 0; i < 40; i++)
 				for (int j = 0; j < 20; j++)
-					if ((tiles[i][j]->tType != GRASS) &&
-						(tmp.intersects(tiles[i][j]->getGlobalBounds())))
-						(*act)->destroy = true;
-			if ((*act)->destroy)
-			{
-				(*act)->setFillColor(sf::Color::Red); // zamienic to na info o zadanym dmg
-				(*act)->setSize(sf::Vector2f(20, 20));
-				(*act)->setOrigin(10, 10);
-			}
-				
+					if (Tower * tmp = dynamic_cast<Tower*>(tiles[i][j]))
+						if (tmp->shoot())
+						{
+							sf::Vector2f position = tmp->getPosition();
+							position.x += 16;
+							position.y += 16;
+							bullets.push_back(new Bullet(position, tmp->direction, tmp->dmg));
+						}
 		}
-
-
-		//TYMCZASOWE STRZA£Y
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-			bullets.push_back(new Bullet(player->getPosition(), player->direction, 10));
-
-		for (int i = 0; i < 40; i++)
-			for (int j = 0; j < 20; j++)
-				if (Tower * tmp = dynamic_cast<Tower*>(tiles[i][j]))
-					if (tmp->shoot())
-					{
-						sf::Vector2f position = tmp->getPosition();
-						position.x += 16;
-						position.y += 16;
-						bullets.push_back(new Bullet(position, tmp->direction, tmp->dmg));
-					}						
 				
 
-		info.setString(status());
-		//cout << (std::string)info.getString() << endl;
+		stat.setString(status());
+		//cout << (std::string)stat.getString() << endl;
 		refresh();
 		frame_counter++;
 	}
@@ -246,7 +257,7 @@ void Engine::createEnemies(int number)
 void Engine::createTower()
 {
 	delete tiles[mouse_tile.x][mouse_tile.y];
-	tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30);
+	tiles[mouse_tile.x][mouse_tile.y] = new Tower(tileset, sf::Vector2i(7, 12), (float)mouse_tile.x, (float)mouse_tile.y, 10, 30, 20);
 }
 
 void Engine::deleteTower()
@@ -266,6 +277,7 @@ void Engine::refresh()
 	window.draw(*player);
 	for (list<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
 		window.draw(**it);
+	window.draw(stat);
 	window.draw(info);
 	window.display();
 
@@ -290,7 +302,9 @@ string Engine::status()
 {
 	string tmp;
 	sf::Time time = clock.getElapsedTime();
-	tmp = "SEC: ";
+	if (pause)
+		tmp += "~~PAUSED~~\t";
+	tmp += "SEC: ";
 	tmp += to_string(frame_counter / 60);
 	tmp += '\t';
 	tmp += to_string(time.asSeconds());

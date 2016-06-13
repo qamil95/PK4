@@ -2,9 +2,10 @@
 
 
 
-Tower::Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, directions dir) :
+Tower::Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, int _ammo, directions dir) :
 	Tile(_tileset, tile, i, j, TOWER),
 	direction(dir),
+	ammo(_ammo),
 	dmg(_dmg),
 	delay(_delay),
 	counter(_delay)
@@ -21,6 +22,7 @@ bool Tower::shoot()
 	if (counter == 0)
 	{
 		counter = delay;
+		ammo--;
 		return true;
 	}
 	else

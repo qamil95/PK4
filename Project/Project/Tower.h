@@ -8,7 +8,7 @@ private:
 public:
 	int dmg;
 	directions direction;
-	Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, directions dir = RIGHT);
+	Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, int _ammo, directions dir = RIGHT);
 	~Tower();
 	bool shoot();
 	void rotate();
