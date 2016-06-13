@@ -26,13 +26,14 @@ private:
 	sf::Text stat, info;
 	sf::Font font;
 	sf::Clock clock;
+	sf::Time timer;
 	Player* player;
 	vector<Enemy*> enemies;	
 	list<Bullet*> bullets;
 	Tile* tiles[40][20];
 	sf::Texture *tileset;
 	sf::Vector2i mouse_tile = { 0,0 };
-	string msg = "pasek wiadomosci";
+	string msg = "Wiadomosci: w czasie pauzy mozna wszystko poza chodzeniem i strzelaniem!";
 public:
 	Engine(int trees);
 	~Engine();

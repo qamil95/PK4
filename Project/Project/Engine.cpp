@@ -48,6 +48,7 @@ Engine::Engine(int trees)
 	//player and enemies
 	player = new Player("player", 100, 4, (float)window.getSize().x *1 /4, (float)window.getSize().y / 2);
 	createEnemies(5);
+	timer = sf::seconds(0);
 }
 
 Engine::~Engine()
@@ -186,9 +187,22 @@ void Engine::run()
 		}				
 
 		stat.setString(status());
-		info.setString(player->status() + '\n' + msg + "\nWSAD-Chodzenie | Spacja-strzal | K-Kup amunicje(0.1) | LMP-Obroc/postaw wieze(100) | PPM-Usun wieze");
+		info.setString(player->status() + '\n' + msg + "\nWSAD-Chodzenie | Spacja-Strzal | K-Kup amunicje(0.1) | LMP-Obroc/postaw wieze(100) | PPM-Usun wieze | PAUSE/BREAK - Pauza");
 		refresh();
 		frame_counter++;
+		if (enemies.size() == 0)
+			if (timer == sf::seconds(0))
+			{
+				sendMsg("Spawn nowych przeciwnikow za 5 sek!");	
+				timer = clock.getElapsedTime();
+				timer += sf::seconds(5);
+			}
+			else if (timer < clock.getElapsedTime())
+			{
+				createEnemies(10);
+				pause = true;
+				sendMsg("Nowi przeciwnicy! Automatyczna pauza.");
+			}
 	}
 }
 
