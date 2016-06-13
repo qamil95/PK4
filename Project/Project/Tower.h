@@ -1,6 +1,7 @@
 #pragma once
 #include "Tile.h"
 #include "Hitable.h"
+#include "Bullet.h"
 
 class Tower :
 	public Tile,
@@ -13,7 +14,7 @@ public:
 	directions direction;
 	Tower(sf::Texture* _tileset, sf::Vector2i tile, float i, float j, int _dmg, int _delay, int _ammo, int _hp, directions dir = RIGHT);
 	~Tower();
-	bool shoot();
+	Bullet* shoot();
 	void rotate();
 };
 

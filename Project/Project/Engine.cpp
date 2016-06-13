@@ -188,15 +188,8 @@ void Engine::run()
 			for (int i = 0; i < 40; i++)
 				for (int j = 0; j < 20; j++)
 					if (Tower * tmp = dynamic_cast<Tower*>(tiles[i][j]))
-						if (tmp->shoot())
-						{
-							sf::Vector2f position = tmp->getPosition();
-							position.x += 16;
-							position.y += 16;
-							bullets.push_back(new Bullet(position, tmp->direction, tmp->dmg));
-							if (tmp->ammo < 4)
-								sendMsg("Koncowka amunicji w " + to_string(i) + 'x' + to_string(j) + '!');
-						}
+						if (Bullet* bull = tmp->shoot())
+							bullets.push_back(bull);
 		}
 				
 

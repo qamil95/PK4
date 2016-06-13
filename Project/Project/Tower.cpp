@@ -30,18 +30,21 @@ Tower::~Tower()
 {
 }
 
-bool Tower::shoot()
+Bullet* Tower::shoot()
 {
 	if (counter == 0)
 	{
 		counter = delay;
 		ammo--;
-		return true;
+		sf::Vector2f position = getPosition();
+		position.x += 16;
+		position.y += 16;
+		return new Bullet(position, direction, dmg);
 	}
 	else
 	{
 		counter--;
-		return false;
+		return NULL;
 	}
 }
 
