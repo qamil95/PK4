@@ -44,9 +44,11 @@ Engine::Engine(int trees)
 		int y = rand() % 20;
 		if ((tiles[x][y]->tType == GRASS) && !(tiles[x][y]->getGlobalBounds().intersects(player->getGlobalBounds())))
 		{
-			tiles[x][y]->changeTexture(sf::Vector2i(5, 19)); 
+			tiles[x][y]->changeTexture(sf::Vector2i(5, 19));
 			tiles[x][y]->tType = WALL;
 		}
+		else
+			i--;
 	}	
 
 	createEnemies();
@@ -190,20 +192,7 @@ void Engine::run()
 		refresh();
 		frame_counter++;
 		if (enemies.size() == 0)
-			if (timer == sf::seconds(0))
-			{
-				sendMsg("Spawn nowych przeciwnikow za 5 sek!");	
-				timer = clock.getElapsedTime();
-				timer += sf::seconds(5);
-				enemiesToCreate ++;
-			}
-			else if (timer < clock.getElapsedTime())
-			{
-				createEnemies();
-				pause = true;
-				sendMsg(to_string(enemiesToCreate) + " nowych przeciwnikow! Automatyczna pauza.");
-				timer = sf::seconds(0);
-			}
+			noEnemies();
 	}
 }
 
@@ -257,10 +246,10 @@ void Engine::createEnemies()
 		bool ok = false;
 		while (!ok)
 		{
-			x = (float)(rand() % window_size_x/2 + window_size_x/2) ;
-			y = (float)(rand() % window_size_y) +20;
-			if (y > 660)
-				continue;
+			x = (float)(rand() % window_size_x/2 + window_size_x/2 -48) ;
+			y = (float)(rand() % window_size_y) +72;
+			if (y > 612)
+				continue;				
 			ok = true;
 		}
 
@@ -371,4 +360,22 @@ void Engine::sendMsg(string _msg)
 	msg += '\t' + old;
 	if (msg.length() > 200)
 		msg.resize(200);
+}
+
+void Engine::noEnemies()
+{
+	if (timer == sf::seconds(0))
+	{
+		sendMsg("Spawn nowych przeciwnikow za 5 sek!");
+		timer = clock.getElapsedTime();
+		timer += sf::seconds(5);
+		enemiesToCreate++;
+	}
+	else if (timer < clock.getElapsedTime())
+	{
+		createEnemies();
+		pause = true;
+		sendMsg(to_string(enemiesToCreate) + " nowych przeciwnikow! Automatyczna pauza.");
+		timer = sf::seconds(0);
+	}
 }
