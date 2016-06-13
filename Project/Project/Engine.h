@@ -21,6 +21,7 @@ private:
 	const int window_size_x = 1280;
 	const int window_size_y = 720;
 	int frame_counter = 0;
+	int enemiesToCreate = 6;
 	bool pause = false;
 	sf::RenderWindow window;
 	sf::Text stat, info;
@@ -40,7 +41,7 @@ public:
 	void run();
 	void updateMousePosition();
 	void updateCollision(Character* _active, sf::Sprite* _reference, float _range = 0);
-	void createEnemies(int number);
+	void createEnemies();
 	void createTower(sf::Vector2i pos);
 	void deleteTower(sf::Vector2i pos);
 	void refresh();

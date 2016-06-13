@@ -19,6 +19,8 @@ Engine::Engine(int trees)
 	info.setColor(sf::Color::White);
 	info.setPosition(sf::Vector2f(6, 32 * 20 + 26));
 
+	timer = sf::seconds(0);
+
 	//Open tileset
 	tileset = new (sf::Texture);
 	tileset->loadFromFile("files/tileset.png");
@@ -33,22 +35,21 @@ Engine::Engine(int trees)
 				tiles[i][j] = new Tile(tileset, sf::Vector2i(0, 0), (float)i, (float)j, GRASS);
 		}
 
+	player = new Player("player", 100, 4, (float)window.getSize().x * 1 / 4, (float)window.getSize().y / 2);	
+
 	//add trees
 	for (int i = 0; i < trees; i++)
 	{
 		int x = rand() % 40;
 		int y = rand() % 20;
-		if (tiles[x][y]->tType == GRASS)
+		if ((tiles[x][y]->tType == GRASS) && !(tiles[x][y]->getGlobalBounds().intersects(player->getGlobalBounds())))
 		{
 			tiles[x][y]->changeTexture(sf::Vector2i(5, 19)); 
 			tiles[x][y]->tType = WALL;
 		}
-	}
+	}	
 
-	//player and enemies
-	player = new Player("player", 100, 4, (float)window.getSize().x *1 /4, (float)window.getSize().y / 2);
-	createEnemies(5);
-	timer = sf::seconds(0);
+	createEnemies();
 }
 
 Engine::~Engine()
@@ -86,8 +87,6 @@ void Engine::run()
 					sendMsg("Za malo pieniedzy!");
 
 			//ONLY DEBUG:
-			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
-				createEnemies(1);
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
 			{
 				delete enemies.back();
@@ -196,12 +195,14 @@ void Engine::run()
 				sendMsg("Spawn nowych przeciwnikow za 5 sek!");	
 				timer = clock.getElapsedTime();
 				timer += sf::seconds(5);
+				enemiesToCreate ++;
 			}
 			else if (timer < clock.getElapsedTime())
 			{
-				createEnemies(10);
+				createEnemies();
 				pause = true;
-				sendMsg("Nowi przeciwnicy! Automatyczna pauza.");
+				sendMsg(to_string(enemiesToCreate) + " nowych przeciwnikow! Automatyczna pauza.");
+				timer = sf::seconds(0);
 			}
 	}
 }
@@ -248,9 +249,9 @@ void Engine::updateCollision(Character* _active, sf::Sprite * _reference, float 
 }
 
 
-void Engine::createEnemies(int number)
+void Engine::createEnemies()
 {	
-	for (int i = 0; i < number; i++) //przeciwnicy
+	for (int i = 0; i < enemiesToCreate; i++) //przeciwnicy
 	{
 		float x, y;
 		bool ok = false;
