@@ -71,4 +71,7 @@ void Tower::rotate()
 void Tower::hit(int dmg)
 {
 	hp -= dmg;
+	if (hp <= 0)
+		dead = true;
+	setColor(sf::Color(255, 0, 0, 180));
 }

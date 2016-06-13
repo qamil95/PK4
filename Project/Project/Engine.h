@@ -7,6 +7,7 @@
 #include "Character.h"
 #include "Enemy.h"
 #include "enums.h"
+#include "Hitable.h"
 #include "Player.h"
 #include "Tile.h"
 #include "Tower.h"

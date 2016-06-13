@@ -18,7 +18,6 @@ Engine::Engine(int trees)
 	info.setCharacterSize(14);
 	info.setColor(sf::Color::White);
 	info.setPosition(sf::Vector2f(6, 32 * 20 + 26));
-	info.setString("TESTOWY NAPISIK Z INFORMACJAMI\nLN2\nLN3");
 
 	//Open tileset
 	tileset = new (sf::Texture);
@@ -47,7 +46,7 @@ Engine::Engine(int trees)
 	}
 
 	//player and enemies
-	player = new Player("player", 100, 4, (float)window.getSize().x / 2, (float)window.getSize().y / 2);
+	player = new Player("player", 100, 4, (float)window.getSize().x *1 /4, (float)window.getSize().y / 2);
 	createEnemies(4);
 }
 
@@ -81,6 +80,8 @@ void Engine::run()
 			}
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 				deleteTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
+
+			//ONLY DEBUG:
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Add))
 				createEnemies(1);
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
@@ -159,7 +160,7 @@ void Engine::run()
 							
 				if ((*act)->destroy)
 				{
-					(*act)->setFillColor(sf::Color::Red); // zamienic to na info o zadanym dmg
+					(*act)->setFillColor(sf::Color::Red);
 					(*act)->setSize(sf::Vector2f(20, 20));
 					(*act)->setOrigin(10, 10);
 				}
@@ -185,6 +186,7 @@ void Engine::run()
 				
 
 		stat.setString(status());
+		info.setString(player->status() + "\nLN2" + "\nLN3");
 		//cout << (std::string)stat.getString() << endl;
 		refresh();
 		frame_counter++;
@@ -241,7 +243,7 @@ void Engine::createEnemies(int number)
 		bool ok = false;
 		while (!ok)
 		{
-			x = (float)(rand() % window_size_x);
+			x = (float)(rand() % window_size_x/2 + window_size_x/2) ;
 			y = (float)(rand() % window_size_y) +20;
 			if (y > 660)
 				continue;
@@ -287,7 +289,9 @@ void Engine::refresh()
 	window.draw(stat);
 	window.draw(info);
 	window.display();
-
+	
+	//czyszczenie martwych i naprawa uderzonych
+	player->setColor(sf::Color::White);
 	for (list<Bullet*>::iterator act = bullets.begin(); act != bullets.end(); ++act)
 		if ((*act)->destroy)
 		{
@@ -301,12 +305,17 @@ void Engine::refresh()
 			delete (*act);
 			enemies.erase(act);
 			act--;
+			player->money += 10;
 		}
-	for(int i=0; i<40; i++)
+		else
+			(*act)->setColor(sf::Color::White);
+	for (int i = 0; i < 40; i++)
 		for (int j = 0; j < 20; j++)
 			if (Tower* tmp = dynamic_cast<Tower*>(tiles[i][j]))
-				if (tmp->hp <= 0)
+				if (tmp->dead)
 					deleteTower(sf::Vector2i(i, j));
+				else
+					tiles[i][j]->setColor(sf::Color::White);
 }
 
 

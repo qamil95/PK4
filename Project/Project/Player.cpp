@@ -1,7 +1,8 @@
 #include "Player.h"
 
 Player::Player(string _type, int _hp, float _movement_speed, float _x, float _y) :
-	Character(_type, _hp, _movement_speed, _x, _y) 
+	Character(_type, _hp, _movement_speed, _x, _y),
+	money(0)
 {
 	for (int i = 0; i < 4; i++)
 		collision[i] = false;
@@ -41,4 +42,14 @@ void Player::move()
 		setTextureRect(sf::IntRect(32, 0, 32, 32));
 		direction = RIGHT;
 	}
+}
+
+string Player::status()
+{
+	string tmp;
+	tmp = "PLAYER INFO:\tHP: ";
+	tmp += to_string(hp);
+	tmp += "\tMONEY: ";
+	tmp += to_string(money);
+	return tmp;
 }

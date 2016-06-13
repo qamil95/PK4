@@ -3,11 +3,13 @@
 #include <iostream>
 #include <string>
 #include "enums.h"
+#include "Hitable.h"
 
 using namespace std;
 
 class Character :
-	public sf::Sprite
+	public sf::Sprite,
+	public Hitable
 {
 private:
 	sf::Texture *texture;
