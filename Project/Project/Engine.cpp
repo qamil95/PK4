@@ -35,7 +35,7 @@ Engine::Engine(int trees)
 				tiles[i][j] = new Tile(tileset, sf::Vector2i(0, 0), (float)i, (float)j, GRASS);
 		}
 
-	player = new Player("player", 100, 4, (float)window.getSize().x / 6, (float)window.getSize().y / 2);	
+	player = new Player("player", 200, 10 ,4, (float)window.getSize().x / 6, (float)window.getSize().y / 2);	
 
 	//add trees
 	for (int i = 0; i < trees; i++)
@@ -191,6 +191,10 @@ void Engine::run()
 					if (Tower * tmp = dynamic_cast<Tower*>(tiles[i][j]))
 						if (Bullet* bull = tmp->shoot())
 							bullets.push_back(bull);
+
+			//atak przeciwnikow
+			for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
+				(*it)->attack(player);
 		}				
 
 		stat.setString(status());
@@ -272,10 +276,10 @@ void Engine::createEnemies()
 		switch (type)
 		{
 		case 0:
-			enemies.push_back(new Enemy("opponent", 50, 2, x, y));
+			enemies.push_back(new Enemy("opponent", 50, 20, 2, x, y, type));
 			break;
 		case 1:
-			enemies.push_back(new Enemy("opponent2", 50, 2, x, y));
+			enemies.push_back(new Enemy("opponent2", 50, 20, 2, x, y, type));
 			break;
 		}		
 	}
@@ -336,6 +340,7 @@ void Engine::refresh()
 			if (Tower* tmp = dynamic_cast<Tower*>(tiles[i][j]))
 				if ((tmp->dead) || (tmp->ammo == 0))
 					deleteTower(sf::Vector2i(i, j));					
+	player->setColor(sf::Color::White);
 }
 
 

@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player::Player(string _type, int _hp, float _movement_speed, float _x, float _y) :
-	Character(_type, _hp, _movement_speed, _x, _y),
+Player::Player(string _type, int _hp, int _dmg, float _movement_speed, float _x, float _y) :
+	Character(_type, _hp, _dmg, _movement_speed, _x, _y),
 	money(0),
 	ammo(50)
 {

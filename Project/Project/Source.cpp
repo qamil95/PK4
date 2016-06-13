@@ -2,7 +2,7 @@
 
 int main()
 {
-	Engine game(10);
+	Engine game(16);
 	game.run();
 	return 0;
 }

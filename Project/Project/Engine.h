@@ -21,7 +21,7 @@ private:
 	const int window_size_x = 1280;
 	const int window_size_y = 720;
 	int frame_counter = 0;
-	int enemiesToCreate = 3;
+	int enemiesToCreate = 5;
 	bool pause = false;
 	sf::RenderWindow window;
 	sf::Text stat, info;

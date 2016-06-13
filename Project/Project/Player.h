@@ -8,8 +8,8 @@ class Player :
 private:
 	int money, points, ammo;
 public:	
-	int delay = 0, shoot_delay = 30, dmg = 10;
-	Player(string _type, int _hp, float _movement_speed, float _x, float _y);
+	int delay = 0, shoot_delay = 30;
+	Player(string _type, int _hp, int _dmg, float _movement_speed, float _x, float _y);
 	~Player();
 	void move();
 	bool increaseShootSpeed();

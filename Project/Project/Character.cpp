@@ -1,9 +1,10 @@
 #include "Character.h"
 
-Character::Character(string _type, int _hp, float _movement_speed, float _x, float _y) :
+Character::Character(string _type, int _hp, int _dmg, float _movement_speed, float _x, float _y) :
 	Hitable(_hp),
 	movement_speed(_movement_speed),
-	direction(UP)
+	direction(UP),
+	dmg(_dmg)
 {
 	string name;
 	name = "files/";
