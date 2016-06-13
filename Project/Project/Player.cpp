@@ -45,6 +45,28 @@ void Player::move()
 	}
 }
 
+bool Player::increaseShootSpeed()
+{
+	if ((shoot_delay > 2) && (changeMoney(-100)))
+	{
+		shoot_delay--;
+		return true;
+	}		
+	else
+		return false;
+}
+
+bool Player::increaseDMG()
+{
+	if (changeMoney(-150))
+	{
+		dmg++;
+		return true;
+	}		
+	else
+		return false;
+}
+
 bool Player::changeMoney(int _money, int _points)
 {
 	if (money + _money > 0)
@@ -59,13 +81,13 @@ bool Player::changeMoney(int _money, int _points)
 
 bool Player::buyAmmo()
 {
-	if (money > 1000)
+	if (money > 500)
 	{
 		money -= 100;
 		ammo += 1000;
 		return true;
 	}
-	else if (money > 100)
+	else if (money > 50)
 	{
 		money-= 10;
 		ammo += 100;
@@ -90,6 +112,8 @@ string Player::status()
 	tmp += to_string(ammo);
 	tmp += "\tDMG: ";
 	tmp += to_string(dmg);
+	tmp += "\tShootsPerSecond: ";
+	tmp += to_string((float)60/shoot_delay);
 	tmp += "\tMONEY: ";
 	tmp += to_string(money);
 	tmp += "\tPOINTS: ";
@@ -99,10 +123,11 @@ string Player::status()
 
 Bullet * Player::shoot()
 {
-	if (ammo > 0) //moze strzelic
+	if ((ammo > 0) && (delay < 0)) //moze strzelic
 	{
 		ammo--;
 		sf::Vector2f position = getPosition();
+		delay = shoot_delay;
 		return new Bullet(position, direction, dmg);
 	}
 	else

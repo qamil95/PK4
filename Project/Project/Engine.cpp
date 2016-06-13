@@ -87,6 +87,13 @@ void Engine::run()
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::K))
 				if (!player->buyAmmo())
 					sendMsg("Za malo pieniedzy!");
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::N))
+				if (player->increaseDMG())
+					sendMsg("Za malo pieniedzy!");
+			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::M))
+				if (!player->increaseShootSpeed())
+					sendMsg("Za malo pieniedzy lub max predkosc osiagnieta!");
+
 
 			//ONLY DEBUG:
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
@@ -173,11 +180,10 @@ void Engine::run()
 			}
 
 			//strzal gracza
+			player->delay--;
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				if (Bullet* bull = player->shoot())
-					bullets.push_back(bull);
-				else
-					sendMsg("Brak amunicji! K zeby kupic");				
+					bullets.push_back(bull);	
 
 			//strzal wiezyczek
 			for (int i = 0; i < 40; i++)
@@ -188,7 +194,7 @@ void Engine::run()
 		}				
 
 		stat.setString(status());
-		info.setString(player->status() + '\n' + msg + "\nWSAD-Chodzenie | Spacja-Strzal | K-Kup amunicje(0.1) | LMP-Obroc/postaw wieze(100) | PPM-Usun wieze | PAUSE/BREAK - Pauza");
+		info.setString(player->status() + '\n' + msg + "\nWSAD-Chodzenie | Spacja-Strzal | K-Kup amunicje(0.1) | LMP-Postaw wieze(50) lub obroc postawiona | PPM-Usun wieze | N-Wiecej DMG (150) | M-Czestsze strzaly (100) | PAUSE/BREAK - Pauza");
 		refresh();
 		frame_counter++;
 		if (enemies.size() == 0)
@@ -266,10 +272,10 @@ void Engine::createEnemies()
 		switch (type)
 		{
 		case 0:
-			enemies.push_back(new Enemy("opponent", 100, 2, x, y));
+			enemies.push_back(new Enemy("opponent", 50, 2, x, y));
 			break;
 		case 1:
-			enemies.push_back(new Enemy("opponent2", 100, 2, x, y));
+			enemies.push_back(new Enemy("opponent2", 50, 2, x, y));
 			break;
 		}		
 	}
@@ -277,7 +283,7 @@ void Engine::createEnemies()
 
 void Engine::buildTower(sf::Vector2i pos)
 {
-	if (player->changeMoney(-100))
+	if (player->changeMoney(-50))
 	{
 		delete tiles[pos.x][pos.y];
 		tiles[pos.x][pos.y] = new Tower(tileset, sf::Vector2i(7, 15), (float)pos.x, (float)pos.y, 10, 30, 100, 100);
