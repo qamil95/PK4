@@ -88,7 +88,7 @@ void Engine::run()
 				if (!player->buyAmmo())
 					sendMsg("Za malo pieniedzy!");
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::N))
-				if (player->increaseDMG())
+				if (!player->increaseDMG())
 					sendMsg("Za malo pieniedzy!");
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::M))
 				if (!player->increaseShootSpeed())
@@ -404,7 +404,7 @@ void Engine::noEnemies()
 
 void Engine::gameOver()
 {
-	stat.setPosition(window_size_x / 2, window_size_y / 2);
+	stat.setPosition((float)window_size_x / 2, (float)window_size_y / 2);
 	stat.setCharacterSize(20);
 	stat.setString("GAME OVER!\nRESULT: " + to_string(player->getPoints()) + "\nESC TO QUIT");
 	
