@@ -20,25 +20,25 @@ void Enemy::move() //AI losowe
 	}
 	switch (direction)
 	{
-	case 0:
-		if ((getPosition().x > 0) && !collision[LEFT])
-			Sprite::move(-movement_speed, 0);
-		setTextureRect(sf::IntRect(0, 0, 32, 32));
-		break;
-	case 1:
-		if ((getPosition().x < 1280) && !collision[RIGHT])
-			Sprite::move(movement_speed, 0);
-		setTextureRect(sf::IntRect(32, 0, 32, 32));
-		break;
-	case 2:
+	case UP:
 		if ((getPosition().y > 0) && !collision[UP])
 			Sprite::move(0, -movement_speed);
 		setTextureRect(sf::IntRect(0, 32, 32, 32));
 		break;
-	case 3:
+	case DOWN:
 		if ((getPosition().y < 720) && !collision[DOWN])
 			Sprite::move(0, movement_speed);
 		setTextureRect(sf::IntRect(32, 32, 32, 32));
+		break;
+	case LEFT:
+		if ((getPosition().x > 0) && !collision[LEFT])
+			Sprite::move(-movement_speed, 0);
+		setTextureRect(sf::IntRect(0, 0, 32, 32));
+		break;
+	case RIGHT:
+		if ((getPosition().x < 1280) && !collision[RIGHT])
+			Sprite::move(movement_speed, 0);
+		setTextureRect(sf::IntRect(32, 0, 32, 32));
 		break;
 	}
 	counter++;

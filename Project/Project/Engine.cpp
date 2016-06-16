@@ -302,6 +302,7 @@ void Engine::refresh()
 			window.draw(*tiles[i][j]);
 	for (vector<Enemy*>::iterator it = enemies.begin(); it != enemies.end(); ++it)
 		window.draw(**it);
+		
 	window.draw(*player);
 	for (list<Bullet*>::iterator it = bullets.begin(); it != bullets.end(); ++it)
 		window.draw(**it);
