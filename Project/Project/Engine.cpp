@@ -81,6 +81,8 @@ void Engine::run()
 					tmp->rotate();
 				else if (tiles[mouse_tile.x][mouse_tile.y]->tType == GRASS)
 					buildTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
+				else
+					sendMsg("Wiezyczke mozna stawiac tylko na trawie!");
 			}
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Right) && (tiles[mouse_tile.x][mouse_tile.y]->tType == TOWER))
 				deleteTower(sf::Vector2i(mouse_tile.x, mouse_tile.y));
