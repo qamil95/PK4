@@ -92,17 +92,7 @@ void Engine::run()
 					sendMsg("Za malo pieniedzy!");
 			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::M))
 				if (!player->increaseShootSpeed())
-					sendMsg("Za malo pieniedzy lub max predkosc osiagnieta!");
-
-
-			//ONLY DEBUG:
-			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Subtract) && enemies.size() != 0)
-			{
-				delete enemies.back();
-				enemies.pop_back();
-			}				
-			if ((event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Delete))
-				cout << "BREAKPOINT" <<endl;			
+					sendMsg("Za malo pieniedzy lub max predkosc osiagnieta!");	
 		}
 
 		if (!pause)
