@@ -190,7 +190,7 @@ void Engine::run()
 		}				
 
 		stat.setString(status());
-		info.setString(player->status() + '\n' + msg + "\nWSAD-Chodzenie | Spacja-Strzal | K-Kup amunicje(0.1) | LMP-Postaw wieze(50) lub obroc postawiona | PPM-Usun wieze | N-Wiecej DMG (150) | M-Czestsze strzaly (100) | PAUSE/BREAK - Pauza");
+		info.setString(player->status() + '\n' + msg + "\nWSAD-Chodzenie | Spacja-Strzal | K-Kup amunicje(0.1) | LPM-Postaw wieze(50) lub obroc postawiona | PPM-Usun wieze | N-Wiecej DMG (150) | M-Czestsze strzaly (100) | PAUSE/BREAK - Pauza");
 		refresh();
 		frame_counter++;
 		if (enemies.size() == 0)
